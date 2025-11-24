@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -64,13 +65,29 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
+    // Validate form first
+    const isValid = validateForm();
+
+    if (!isValid) {
+      // Show the first validation error as toast
+      if (errors.name) {
+        toast.error(errors.name);
+      } else if (errors.email) {
+        toast.error(errors.email);
+      } else if (errors.password) {
+        toast.error(errors.password);
+      } else if (errors.confirmPassword) {
+        toast.error(errors.confirmPassword);
+      }
       return;
     }
 
     setLoading(true);
+    setErrors({});
 
     try {
+      console.log("Sending registration request...");
+
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
@@ -84,8 +101,12 @@ export default function Register() {
       });
 
       const data = await response.json();
+      console.log("Registration response:", data);
 
       if (response.ok) {
+        console.log("Registration successful, attempting auto-login...");
+        toast.success("Registration successful! Logging you in...");
+
         // Auto login after successful registration
         const result = await signIn("credentials", {
           email: formData.email,
@@ -93,27 +114,40 @@ export default function Register() {
           redirect: false,
         });
 
+        console.log("Auto-login result:", result);
+
         if (result?.error) {
-          alert("Registration successful! Please login.");
+          console.log("Auto-login failed, redirecting to login page");
+          toast.success("Account created! Please sign in.");
           router.push("/login");
         } else {
+          console.log("Auto-login successful, redirecting to home");
+          toast.success("Welcome! Your account has been created.");
           router.push("/");
         }
       } else {
-        setErrors({ submit: data.error || "Registration failed" });
+        console.log("Registration failed:", data.error);
+        // Show specific error message from server
+        if (data.error?.includes("already exists")) {
+          toast.error("An account with this email already exists.");
+        } else if (data.error?.includes("required")) {
+          toast.error("Please fill in all required fields.");
+        } else {
+          toast.error(data.error || "Registration failed. Please try again.");
+        }
       }
     } catch (error) {
-      setErrors({ submit: "Registration failed. Please try again." });
+      console.error("Registration error:", error);
+      toast.error("Network error. Please check your connection.");
     } finally {
       setLoading(false);
     }
   };
-
   const handleGoogleSignIn = async () => {
     try {
       await signIn("google", { callbackUrl: "/" });
     } catch (error) {
-      setErrors({ submit: "Google sign in failed" });
+      toast.error("Google sign in failed. Please try again.");
     }
   };
 
@@ -127,6 +161,9 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Toast Container */}
+     
+
       <div className="max-w-md mx-auto px-4 py-8">
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold text-center mb-6">
@@ -234,11 +271,7 @@ export default function Register() {
                   onClick={togglePasswordVisibility}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? (
-                    <FaRegEye />
-                  ) : (
-                      <FaRegEyeSlash/>
-                  )}
+                  {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
                 </button>
               </div>
               {errors.password && (
@@ -247,7 +280,7 @@ export default function Register() {
             </div>
 
             {/* Confirm Password Field with Show/Hide */}
-            {/* <div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Confirm Password
               </label>
@@ -270,13 +303,7 @@ export default function Register() {
                   onClick={toggleConfirmPasswordVisibility}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
                 >
-                  {showConfirmPassword ? (
-                    
-                     <FaRegEye />
-                  ) : (
-                    <FaRegEyeSlash/>
-                   
-                  )}
+                  {showConfirmPassword ? <FaRegEye /> : <FaRegEyeSlash />}
                 </button>
               </div>
               {errors.confirmPassword && (
@@ -284,13 +311,7 @@ export default function Register() {
                   {errors.confirmPassword}
                 </p>
               )}
-            </div> */}
-
-            {errors.submit && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                {errors.submit}
-              </div>
-            )}
+            </div>
 
             <button
               type="submit"
