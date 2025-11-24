@@ -95,8 +95,8 @@ function AddEventContent() {
 
 export default function AddEvent() {
   return (
-    <PrivateRoute>
+   
       <AddEventContent />
-    </PrivateRoute>
+   
   );
 }

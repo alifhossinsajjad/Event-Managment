@@ -1,4 +1,4 @@
-import NextAuth from '../../../../lib/auth/auth';
+import NextAuth from '../../../../lib/auth';
 
 const handler = NextAuth;
 

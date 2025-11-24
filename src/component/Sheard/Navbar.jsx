@@ -25,17 +25,13 @@ export default function Navbar() {
               All Events
             </Link>
             
-            {/* Only show these if user is logged in */}
-            {session && (
-              <>
-                <Link href="/manage-events" className="text-gray-700 hover:text-blue-600 transition">
+            <Link href="/manage-events" className="text-gray-700 hover:text-blue-600 transition">
                   Manage Events
                 </Link>
                 <Link href="/add-events" className="text-gray-700 hover:text-blue-600 transition">
                   Add Event
                 </Link>
-              </>
-            )}
+           
 
             {session ? (
               <div className="relative">

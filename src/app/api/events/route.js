@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import Event from "@/lib/models/Event";
 import dbConnect from "@/lib/db/db"; 
-import { authOptions } from "@/lib/auth"; 
+import { authOptions } from "@/lib/auth";
+
 
 
 export async function GET() {
