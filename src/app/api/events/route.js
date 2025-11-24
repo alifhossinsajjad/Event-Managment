@@ -4,6 +4,7 @@ import Event from "@/lib/models/Event";
 import dbConnect from "@/lib/db/db"; 
 import { authOptions } from "@/lib/auth"; 
 
+
 export async function GET() {
   try {
     await dbConnect();
@@ -18,6 +19,7 @@ export async function GET() {
   }
 }
 
+// Create new event (protected)
 export async function POST(request) {
   try {
     const session = await getServerSession(authOptions);
@@ -38,6 +40,26 @@ export async function POST(request) {
     console.error("Error creating event:", error);
     return NextResponse.json(
       { error: "Error creating event" },
+      { status: 500 }
+    );
+  }
+}
+
+// Get user's events (protected)
+export async function GET_USER_EVENTS(request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    await dbConnect();
+    const events = await Event.find({ createdBy: session.user.id }).populate("createdBy", "name email");
+    return NextResponse.json(events);
+  } catch (error) {
+    console.error("Error fetching user events:", error);
+    return NextResponse.json(
+      { error: "Error fetching events" },
       { status: 500 }
     );
   }

@@ -18,30 +18,24 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/"
-              className="text-gray-700 hover:text-blue-600 transition"
-            >
+            <Link href="/" className="text-gray-700 hover:text-blue-600 transition">
               Home
             </Link>
-            <Link
-              href="/all-events"
-              className="text-gray-700 hover:text-blue-600 transition"
-            >
+            <Link href="/all-events" className="text-gray-700 hover:text-blue-600 transition">
               All Events
             </Link>
-            <Link
-              href="/manage-events"
-              className="text-gray-700 hover:text-blue-600 transition"
-            >
-              Manage Events
-            </Link>
-            <Link
-              href="/add-events"
-              className="text-gray-700 hover:text-blue-600 transition"
-            >
-              Add Event
-            </Link>
+            
+            {/* Only show these if user is logged in */}
+            {session && (
+              <>
+                <Link href="/manage-events" className="text-gray-700 hover:text-blue-600 transition">
+                  Manage Events
+                </Link>
+                <Link href="/add-events" className="text-gray-700 hover:text-blue-600 transition">
+                  Add Event
+                </Link>
+              </>
+            )}
 
             {session ? (
               <div className="relative">
@@ -50,29 +44,34 @@ export default function Navbar() {
                   className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition"
                 >
                   <img
-                    src={session.user.image || "/default-avatar.png"}
-                    alt={session.user.name}
+                    src={session.user?.image || "/default-avatar.png"}
+                    alt={session.user?.name || "User"}
                     className="w-8 h-8 rounded-full"
                   />
-                  <span>{session.user.name}</span>
+                  <span>{session.user?.name}</span>
                 </button>
 
                 {isOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
                     <Link
-                      href="/add-event"
+                      href="/add-events"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsOpen(false)}
                     >
                       Add Event
                     </Link>
                     <Link
                       href="/manage-events"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsOpen(false)}
                     >
                       Manage Events
                     </Link>
                     <button
-                      onClick={() => signOut()}
+                      onClick={() => {
+                        setIsOpen(false);
+                        signOut();
+                      }}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Sign Out
@@ -82,16 +81,10 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <Link
-                  href="/login"
-                  className="text-gray-700 hover:text-blue-600 transition"
-                >
+                <Link href="/login" className="text-gray-700 hover:text-blue-600 transition">
                   Login
                 </Link>
-                <Link
-                  href="/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-                >
+                <Link href="/register" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
                   Register
                 </Link>
               </div>
@@ -100,18 +93,8 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
@@ -119,43 +102,37 @@ export default function Navbar() {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden py-4 border-t">
-            <Link href="/" className="block py-2 text-gray-700">
+            <Link href="/" className="block py-2 text-gray-700" onClick={() => setIsOpen(false)}>
               Home
             </Link>
-            <Link href="/events" className="block py-2 text-gray-700">
-              Events
+            <Link href="/all-events" className="block py-2 text-gray-700" onClick={() => setIsOpen(false)}>
+              All Events
             </Link>
-            <Link href="/about" className="block py-2 text-gray-700">
-              About
-            </Link>
-            <Link href="/contact" className="block py-2 text-gray-700">
-              Contact
-            </Link>
-
+            
             {session ? (
               <>
-                <Link href="/add-event" className="block py-2 text-gray-700">
-                  Add Event
-                </Link>
-                <Link
-                  href="/manage-events"
-                  className="block py-2 text-gray-700"
-                >
+                <Link href="/manage-events" className="block py-2 text-gray-700" onClick={() => setIsOpen(false)}>
                   Manage Events
                 </Link>
+                <Link href="/add-events" className="block py-2 text-gray-700" onClick={() => setIsOpen(false)}>
+                  Add Event
+                </Link>
                 <button
-                  onClick={() => signOut()}
-                  className="block py-2 text-gray-700"
+                  onClick={() => {
+                    setIsOpen(false);
+                    signOut();
+                  }}
+                  className="block w-full text-left py-2 text-gray-700"
                 >
                   Sign Out
                 </button>
               </>
             ) : (
               <>
-                <Link href="/login" className="block py-2 text-gray-700">
+                <Link href="/login" className="block py-2 text-gray-700" onClick={() => setIsOpen(false)}>
                   Login
                 </Link>
-                <Link href="/register" className="block py-2 text-gray-700">
+                <Link href="/register" className="block py-2 text-gray-700" onClick={() => setIsOpen(false)}>
                   Register
                 </Link>
               </>
