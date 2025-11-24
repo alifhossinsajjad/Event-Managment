@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const eventSchema = new mongoose.Schema({
   title: {
@@ -24,20 +24,21 @@ const eventSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: '',
+    default: "",
   },
   category: {
     type: String,
     required: true,
-    enum: ['conference', 'workshop', 'seminar', 'social', 'sports'],
+    enum: ["conference", "workshop", "seminar", "social", "sports"],
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
 }, {
   timestamps: true,
 });
 
-export default mongoose.models.Event || mongoose.model('Event', eventSchema);
+
+export default mongoose.models.Event || mongoose.model("Event", eventSchema);

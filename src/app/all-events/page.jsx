@@ -3,7 +3,7 @@ import React from 'react';
 const AllEvents = () => {
     return (
         <div>
-            all events
+            <h3>all events</h3>
         </div>
     );
 };
