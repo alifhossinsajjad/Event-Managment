@@ -1,10 +1,8 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-
-import dbConnect from "./db/db";
-import User from "./models/User";
-
+import User from "@/lib/models/User";
+import dbConnect from "@/lib/db/db";
 
 export const authOptions = {
   providers: [
@@ -19,23 +17,28 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        await dbConnect();
+        try {
+          await dbConnect();
 
-        const user = await User.findOne({ email: credentials.email });
-        if (!user) throw new Error("No user found with this email");
+          const user = await User.findOne({ email: credentials.email });
+          if (!user) throw new Error("No user found with this email");
 
-        const isValid = await user.correctPassword(
-          credentials.password,
-          user.password
-        );
-        if (!isValid) throw new Error("Invalid password");
+          const isValid = await user.correctPassword(
+            credentials.password,
+            user.password
+          );
+          if (!isValid) throw new Error("Invalid password");
 
-        return {
-          id: user._id.toString(),
-          email: user.email,
-          name: user.name,
-          image: user.image,
-        };
+          return {
+            id: user._id.toString(),
+            email: user.email,
+            name: user.name,
+            image: user.image,
+          };
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
+        }
       },
     }),
   ],
@@ -54,10 +57,14 @@ export const authOptions = {
   pages: {
     signIn: "/login",
     signUp: "/register",
+    error: "/login", // Error code passed in query string as ?error=
   },
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  debug: process.env.NODE_ENV === "development",
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);
