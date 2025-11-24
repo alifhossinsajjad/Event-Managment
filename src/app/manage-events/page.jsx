@@ -154,155 +154,156 @@ function ManageEventsContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Manage Your Events
-          </h1>
-          <Link
-            href="/add-events"
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
-          >
-            Add New Event
-          </Link>
-        </div>
+    // <div className="min-h-screen bg-gray-50">
+    //   <div className="max-w-7xl mx-auto px-4 py-8">
+    //     <div className="flex justify-between items-center mb-6">
+    //       <h1 className="text-3xl font-bold text-gray-800">
+    //         Manage Your Events
+    //       </h1>
+    //       <Link
+    //         href="/add-events"
+    //         className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+    //       >
+    //         Add New Event
+    //       </Link>
+    //     </div>
 
-        {events.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg shadow-md">
-            <div className="text-gray-500 text-lg mb-4">
-              You have not created any events yet.
-            </div>
-            <Link
-              href="/add-events"
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition"
-            >
-              Create Your First Event
-            </Link>
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {events.map((event) => (
-              <div
-                key={event._id}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
-              >
-                {/* <img
-                  src={event.image || '/event-placeholder.jpg'}
-                  alt={event.title}
-                  className="w-full h-48 object-cover"
-                /> */}
+    //     {events.length === 0 ? (
+    //       <div className="text-center py-12 bg-white rounded-lg shadow-md">
+    //         <div className="text-gray-500 text-lg mb-4">
+    //           You have not created any events yet.
+    //         </div>
+    //         <Link
+    //           href="/add-events"
+    //           className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition"
+    //         >
+    //           Create Your First Event
+    //         </Link>
+    //       </div>
+    //     ) : (
+    //       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    //         {events.map((event) => (
+    //           <div
+    //             key={event._id}
+    //             className="bg-white rounded-lg shadow-md overflow-hidden"
+    //           >
+    //             {/* <img
+    //               src={event.image || '/event-placeholder.jpg'}
+    //               alt={event.title}
+    //               className="w-full h-48 object-cover"
+    //             /> */}
 
-                <div className="p-6">
-                  {editingEvent === event._id ? (
-                    // Edit Form
-                    <div className="space-y-3">
-                      <input
-                        type="text"
-                        name="title"
-                        value={editFormData.title}
-                        onChange={handleEditChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Event Title"
-                      />
-                      <textarea
-                        name="shortDescription"
-                        value={editFormData.shortDescription}
-                        onChange={handleEditChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Short Description"
-                        rows="2"
-                      />
-                      <div className="grid grid-cols-2 gap-3">
-                        <input
-                          type="number"
-                          name="price"
-                          value={editFormData.price}
-                          onChange={handleEditChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="Price"
-                          step="0.01"
-                        />
-                        <input
-                          type="date"
-                          name="date"
-                          value={editFormData.date}
-                          onChange={handleEditChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <select
-                        name="category"
-                        value={editFormData.category}
-                        onChange={handleEditChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="conference">Conference</option>
-                        <option value="workshop">Workshop</option>
-                        <option value="seminar">Seminar</option>
-                        <option value="social">Social</option>
-                        <option value="sports">Sports</option>
-                      </select>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => handleUpdate(event._id)}
-                          className="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
-                        >
-                          Save
-                        </button>
-                        <button
-                          onClick={cancelEdit}
-                          className="flex-1 bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    // Display Mode
-                    <>
-                      <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                        {event.title}
-                      </h3>
-                      <p className="text-gray-600 mb-3 line-clamp-2">
-                        {event.shortDescription}
-                      </p>
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="text-2xl font-bold text-blue-600">
-                          ${event.price}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          {formatDate(event.date)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="inline-block bg-gray-200 text-gray-700 px-2 py-1 rounded text-sm">
-                          {event.category}
-                        </span>
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => handleEdit(event)}
-                            className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition text-sm"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(event._id)}
-                            className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition text-sm"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    //             <div className="p-6">
+    //               {editingEvent === event._id ? (
+    //                 // Edit Form
+    //                 <div className="space-y-3">
+    //                   <input
+    //                     type="text"
+    //                     name="title"
+    //                     value={editFormData.title}
+    //                     onChange={handleEditChange}
+    //                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    //                     placeholder="Event Title"
+    //                   />
+    //                   <textarea
+    //                     name="shortDescription"
+    //                     value={editFormData.shortDescription}
+    //                     onChange={handleEditChange}
+    //                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    //                     placeholder="Short Description"
+    //                     rows="2"
+    //                   />
+    //                   <div className="grid grid-cols-2 gap-3">
+    //                     <input
+    //                       type="number"
+    //                       name="price"
+    //                       value={editFormData.price}
+    //                       onChange={handleEditChange}
+    //                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    //                       placeholder="Price"
+    //                       step="0.01"
+    //                     />
+    //                     <input
+    //                       type="date"
+    //                       name="date"
+    //                       value={editFormData.date}
+    //                       onChange={handleEditChange}
+    //                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    //                     />
+    //                   </div>
+    //                   <select
+    //                     name="category"
+    //                     value={editFormData.category}
+    //                     onChange={handleEditChange}
+    //                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    //                   >
+    //                     <option value="conference">Conference</option>
+    //                     <option value="workshop">Workshop</option>
+    //                     <option value="seminar">Seminar</option>
+    //                     <option value="social">Social</option>
+    //                     <option value="sports">Sports</option>
+    //                   </select>
+    //                   <div className="flex space-x-2">
+    //                     <button
+    //                       onClick={() => handleUpdate(event._id)}
+    //                       className="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
+    //                     >
+    //                       Save
+    //                     </button>
+    //                     <button
+    //                       onClick={cancelEdit}
+    //                       className="flex-1 bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition"
+    //                     >
+    //                       Cancel
+    //                     </button>
+    //                   </div>
+    //                 </div>
+    //               ) : (
+    //                 // Display Mode
+    //                 <>
+    //                   <h3 className="text-xl font-semibold text-gray-800 mb-2">
+    //                     {event.title}
+    //                   </h3>
+    //                   <p className="text-gray-600 mb-3 line-clamp-2">
+    //                     {event.shortDescription}
+    //                   </p>
+    //                   <div className="flex justify-between items-center mb-4">
+    //                     <span className="text-2xl font-bold text-blue-600">
+    //                       ${event.price}
+    //                     </span>
+    //                     <span className="text-sm text-gray-500">
+    //                       {formatDate(event.date)}
+    //                     </span>
+    //                   </div>
+    //                   <div className="flex justify-between items-center">
+    //                     <span className="inline-block bg-gray-200 text-gray-700 px-2 py-1 rounded text-sm">
+    //                       {event.category}
+    //                     </span>
+    //                     <div className="flex space-x-2">
+    //                       <button
+    //                         onClick={() => handleEdit(event)}
+    //                         className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition text-sm"
+    //                       >
+    //                         Edit
+    //                       </button>
+    //                       <button
+    //                         onClick={() => handleDelete(event._id)}
+    //                         className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition text-sm"
+    //                       >
+    //                         Delete
+    //                       </button>
+    //                     </div>
+    //                   </div>
+    //                 </>
+    //               )}
+    //             </div>
+    //           </div>
+    //         ))}
+    //       </div>
+    //     )}
+    //   </div>
+    // </div>
+    <div></div>
   );
 }
 
